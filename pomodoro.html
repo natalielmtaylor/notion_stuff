@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <style>
+        .widget {
+            padding: 20px;
+            color: #404040;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            max-width: 95%;
+            margin: auto;
+            border: 1px solid #808080;
+            border-radius: 5px;
+            box-shadow: 0px 0px 0px 0px #808080;
+        }
+        .modes {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        button {
+            padding: 8px 12px;
+            border: 1px solid #808080;
+            border-radius: 5px;
+            background: none;
+            color: #404040;
+            cursor: pointer;
+        }
+        #display {
+            font-size: 3em;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="widget">
+        <div class="modes">
+            <button onclick="setMode(25)">Pomodoro</button>
+            <button onclick="setMode(5)">Short Break</button>
+            <button onclick="setMode(15)">Long Break</button>
+        </div>
+        <div id="display">25:00</div>
+        <div class="controls">
+            <button id="startBtn" onclick="toggleTimer()">Start</button>
+            <button onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        var totalSeconds = 25 * 60;
+        var timeLeft = totalSeconds;
+        var timerInterval = null;
+        var isRunning = false;
+
+        function setMode(minutes) {
+            totalSeconds = minutes * 60;
+            timeLeft = totalSeconds;
+            updateDisplay();
+            stopTimer();
+        }
+
+        function updateDisplay() {
+            var mins = Math.floor(timeLeft / 60);
+            var secs = timeLeft % 60;
+            if (secs < 10) {
+                secs = "0" + secs;
+            }
+            document.getElementById('display').innerHTML = mins + ":" + secs;
+        }
+
+        function tick() {
+            timeLeft = timeLeft - 1;
+            updateDisplay();
+            if (timeLeft <= 0) {
+                stopTimer();
+            }
+        }
+
+        function toggleTimer() {
+            if (isRunning) {
+                stopTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            isRunning = true;
+            document.getElementById('startBtn').innerHTML = "Pause";
+            timerInterval = setInterval(tick, 1000);
+        }
+
+        function stopTimer() {
+            isRunning = false;
+            document.getElementById('startBtn').innerHTML = "Start";
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            stopTimer();
+            timeLeft = totalSeconds;
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
